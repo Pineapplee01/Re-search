@@ -155,7 +155,8 @@ class LiteratureRunTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, result.stderr)
             payload = json.loads(result.stdout)
-            self.assertTrue(str(wiki_dir) in payload["run_dir"])
+            run_dir = Path(payload["run_dir"]).resolve()
+            self.assertEqual(run_dir.parent.parent, wiki_dir.resolve())
 
     def test_effort_lite_maps_to_quick(self):
         with tempfile.TemporaryDirectory() as tmp:
