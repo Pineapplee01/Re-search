@@ -30,6 +30,7 @@ REQUIRED_MARKDOWN_SECTIONS = (
     "## problem_boundary",
     "## existing_solution_space",
     "## selected_reference_patterns",
+    "## comparison_axes",
     "## migration_path",
     "## boundary_risks",
     "## learning_steps",
@@ -39,6 +40,49 @@ DEFAULT_SOURCE_LAYERS = {
     "research-question": ["paper", "paper-code", "project-page", "dataset-page", "implementation-repo"],
     "skill-implementation": ["github-skill", "implementation-repo", "official-doc", "paper"],
     "tool-api": ["official-doc", "official-example", "release-note", "issue-discussion", "community-repo"],
+}
+DEFAULT_COMPARISON_AXES = {
+    "research-question": [
+        "problem-boundary",
+        "search-scope",
+        "evidence-standard",
+        "transfer-limit",
+    ],
+    "skill-implementation": [
+        "trigger-boundary",
+        "artifact-contract",
+        "script-boundary",
+        "verification-gate",
+        "handoff-state",
+    ],
+    "tool-api": [
+        "api-surface",
+        "version-boundary",
+        "parameter-behavior",
+        "integration-risk",
+    ],
+}
+TASK_TYPE_REFERENCE_RULES = {
+    "research-question": {
+        "minimum_reference_count": 2,
+        "required_category_groups": [
+            ("paper",),
+            ("paper-code", "project-page", "dataset-page", "implementation-repo"),
+        ],
+    },
+    "skill-implementation": {
+        "minimum_reference_count": 2,
+        "required_category_groups": [
+            ("github-skill", "implementation-repo"),
+            ("official-doc", "official-example", "paper"),
+        ],
+    },
+    "tool-api": {
+        "minimum_reference_count": 1,
+        "required_category_groups": [
+            ("official-doc",),
+        ],
+    },
 }
 
 
@@ -120,6 +164,7 @@ def build_initial_payload(*, run_id: str, task: str, task_type: str, project_roo
         },
         "existing_solution_space": [],
         "selected_reference_patterns": [],
+        "comparison_axes": list(DEFAULT_COMPARISON_AXES[task_type]),
         "migration_path": {
             "transfers_directly": [],
             "needs_adaptation": [],
@@ -185,6 +230,9 @@ def validate_reference_entry(entry: object, index: int, seen_ids: set[str]) -> l
 
     if not is_http_url(entry.get("url")):
         errors.append(f"{prefix}.url must be an http(s) URL")
+    quality_signals = entry.get("quality_signals")
+    if not non_empty_string_list(quality_signals):
+        errors.append(f"{prefix}.quality_signals must be a non-empty list of strings")
     return errors
 
 
@@ -298,6 +346,13 @@ def validate_selected_patterns(payload: dict[str, Any], *, known_refs: set[str])
     return errors
 
 
+def validate_comparison_axes(payload: dict[str, Any]) -> list[str]:
+    comparison_axes = payload.get("comparison_axes")
+    if not non_empty_string_list(comparison_axes):
+        return ["comparison_axes must be a non-empty list of strings"]
+    return []
+
+
 def validate_migration_path(payload: dict[str, Any]) -> list[str]:
     errors: list[str] = []
     migration_path = payload.get("migration_path")
@@ -337,6 +392,25 @@ def validate_recommended_next_skill(payload: dict[str, Any]) -> list[str]:
     return errors
 
 
+def validate_reference_coverage(*, task_type: object, source_categories: set[str], reference_count: int) -> list[str]:
+    if not isinstance(task_type, str) or task_type not in TASK_TYPE_REFERENCE_RULES:
+        return []
+
+    rule = TASK_TYPE_REFERENCE_RULES[task_type]
+    errors: list[str] = []
+    if reference_count < rule["minimum_reference_count"]:
+        errors.append(
+            f"{task_type} requires at least {rule['minimum_reference_count']} references before handoff"
+        )
+
+    for category_group in rule["required_category_groups"]:
+        if any(category in source_categories for category in category_group):
+            continue
+        rendered_group = " | ".join(category_group)
+        errors.append(f"{task_type} requires source coverage for: {rendered_group}")
+    return errors
+
+
 def validate_payload(payload: object, *, markdown_path: Path, require_ready: bool) -> list[str]:
     errors = validate_markdown(markdown_path)
     if not isinstance(payload, dict):
@@ -348,6 +422,15 @@ def validate_payload(payload: object, *, markdown_path: Path, require_ready: boo
     solution_space_errors, seen_refs = validate_solution_space(payload)
     errors.extend(solution_space_errors)
     errors.extend(validate_selected_patterns(payload, known_refs=set(seen_refs)))
+    errors.extend(validate_comparison_axes(payload))
+    source_categories = {entry.get("source_category") for entry in payload.get("existing_solution_space", []) if isinstance(entry, dict)}
+    errors.extend(
+        validate_reference_coverage(
+            task_type=payload.get("task_type"),
+            source_categories=source_categories,
+            reference_count=len(payload.get("existing_solution_space", [])) if isinstance(payload.get("existing_solution_space"), list) else 0,
+        )
+    )
     errors.extend(validate_migration_path(payload))
     errors.extend(validate_boundary_risks_and_learning_steps(payload))
     errors.extend(validate_recommended_next_skill(payload))
@@ -414,6 +497,8 @@ def validate_preflight(args: argparse.Namespace) -> int:
             "run_id": payload["run_id"],
             "task_type": payload["task_type"],
             "recommended_next_skill": payload["recommended_next_skill"]["skill"],
+            "comparison_axes": payload["comparison_axes"],
+            "reference_count": len(payload["existing_solution_space"]),
             "preflight_json": str(json_path.resolve()),
             "preflight_md": str(markdown_path.resolve()),
         }

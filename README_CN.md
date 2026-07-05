@@ -1,6 +1,11 @@
-# Re-search
+# Re-search：面向研究与实现工作的 Codex Skill Pack
 
-[English README](README.md) | [贡献说明](CONTRIBUTING_CN.md) | [Agent Guide](AGENT_GUIDE.md)
+[![Verify](https://github.com/Pineapplee01/Re-search/actions/workflows/verify.yml/badge.svg)](https://github.com/Pineapplee01/Re-search/actions/workflows/verify.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+[English README](README.md) | [贡献说明](CONTRIBUTING_CN.md) | [Agent 指南](AGENT_GUIDE.md) | [发布清单](RELEASE_CHECKLIST.md)
+
+公开仓库地址：[`Pineapplee01/Re-search`](https://github.com/Pineapplee01/Re-search)
 
 Re-search 是一个面向 Codex 的 skill pack 与 research/implementation methodology 仓库。
 它主要服务两类重复任务：

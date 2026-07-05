@@ -118,6 +118,8 @@ def registered_preflight_state(payload: dict[str, Any]) -> dict[str, Any]:
         "preflight_md": payload["preflight_md"],
         "task_type": payload["task_type"],
         "recommended_next_skill": payload["recommended_next_skill"],
+        "comparison_axes": payload.get("comparison_axes", []),
+        "reference_count": payload.get("reference_count"),
         "attached_at": utc_now(),
     }
 

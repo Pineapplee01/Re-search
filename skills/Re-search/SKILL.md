@@ -99,6 +99,7 @@ The JSON artifact must include these top-level fields:
 - `problem_boundary`
 - `existing_solution_space`
 - `selected_reference_patterns`
+- `comparison_axes`
 - `migration_path`
 - `boundary_risks`
 - `learning_steps`
@@ -110,6 +111,7 @@ The Markdown artifact must preserve these semantic sections:
 - `problem_boundary`
 - `existing_solution_space`
 - `selected_reference_patterns`
+- `comparison_axes`
 - `migration_path`
 - `boundary_risks`
 - `learning_steps`
@@ -120,8 +122,15 @@ Reference records inside the artifact must label:
 - source category
 - source URL
 - why the source matters
+- quality signals
 - how the pattern transfers
 - what boundary limit still applies
+
+For `ready` artifacts, the reference set should also satisfy the task-type coverage bar:
+
+- `research-question`: at least one paper plus one artifact-oriented source
+- `skill-implementation`: at least one implementation reference plus one grounding reference
+- `tool-api`: at least one official doc
 
 The artifact should let a downstream skill continue with less re-reading and less drift.
 

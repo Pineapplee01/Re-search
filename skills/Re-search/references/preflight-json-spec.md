@@ -16,6 +16,7 @@
 - `problem_boundary`
 - `existing_solution_space`
 - `selected_reference_patterns`
+- `comparison_axes`
 - `migration_path`
 - `boundary_risks`
 - `learning_steps`
@@ -62,6 +63,7 @@ Each entry must include:
 - `title`
 - `url`
 - `why_it_matters`
+- `quality_signals`
 
 Allowed `source_category` values:
 
@@ -76,6 +78,15 @@ Allowed `source_category` values:
 - `release-note`
 - `issue-discussion`
 - `community-repo`
+
+`quality_signals` must be a non-empty list of non-empty strings.
+Examples:
+
+- `official maintainer`
+- `37k GitHub stars`
+- `top-tier venue`
+- `linked project code`
+- `updated in 2026`
 
 ### `selected_reference_patterns`
 
@@ -93,6 +104,19 @@ Allowed `transfer_decision` values:
 - `reject`
 
 Each `ref_id` must refer to an entry already present in `existing_solution_space`.
+
+### `comparison_axes`
+
+Must be a non-empty list of non-empty strings.
+
+This field records the exact dimensions that downstream comparison or implementation work should preserve.
+Examples:
+
+- `trigger-boundary`
+- `artifact-contract`
+- `verification-gate`
+- `evidence-standard`
+- `transfer-limit`
 
 ### `migration_path`
 
@@ -122,6 +146,31 @@ Required fields:
 
 `context_to_inherit` must be a non-empty list of non-empty strings.
 
+## Task-Type Coverage Expectations
+
+These coverage rules should be satisfied before `status` is set to `ready`:
+
+- `research-question`
+  - at least 2 references
+  - at least 1 `paper`
+  - at least 1 artifact-oriented category from:
+    - `paper-code`
+    - `project-page`
+    - `dataset-page`
+    - `implementation-repo`
+- `skill-implementation`
+  - at least 2 references
+  - at least 1 implementation-oriented category from:
+    - `github-skill`
+    - `implementation-repo`
+  - at least 1 grounding category from:
+    - `official-doc`
+    - `official-example`
+    - `paper`
+- `tool-api`
+  - at least 1 reference
+  - at least 1 `official-doc`
+
 ## Markdown Companion
 
 The sibling `preflight.md` should preserve the same semantic sections:
@@ -130,6 +179,7 @@ The sibling `preflight.md` should preserve the same semantic sections:
 - `problem_boundary`
 - `existing_solution_space`
 - `selected_reference_patterns`
+- `comparison_axes`
 - `migration_path`
 - `boundary_risks`
 - `learning_steps`

@@ -57,5 +57,14 @@ For every selected reference, record:
 - source category
 - source URL
 - why it matters
+- quality signals
 - what transfers
 - what does not transfer
+
+Quality signals should be concrete rather than vague. Prefer signals such as:
+
+- official maintainer or official documentation
+- high GitHub stars or broad real-world adoption
+- peer-reviewed venue or strong research reputation
+- recent publication or recent maintenance activity
+- code / dataset / project artifact availability

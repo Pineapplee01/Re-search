@@ -59,6 +59,15 @@ class LiteratureRunTests(unittest.TestCase):
                 "title": "Seed Research Paper",
                 "url": "https://doi.org/10.1000/seed",
                 "why_it_matters": "Provides a seed search pattern.",
+                "quality_signals": ["top-tier venue"],
+            },
+            {
+                "ref_id": "R2",
+                "source_category": "paper-code",
+                "title": "Seed Research Code",
+                "url": "https://github.com/example/seed-code",
+                "why_it_matters": "Provides artifact grounding for the search pattern.",
+                "quality_signals": ["linked project code", "active repository"],
             }
         ]
         artifact["selected_reference_patterns"] = [
@@ -68,6 +77,11 @@ class LiteratureRunTests(unittest.TestCase):
                 "transfer_decision": "adapt",
                 "boundary_limit": "Do not inherit the source paper's exact scope.",
             }
+        ]
+        artifact["comparison_axes"] = [
+            "problem-boundary",
+            "search-scope",
+            "evidence-standard",
         ]
         artifact["migration_path"] = {
             "transfers_directly": ["Venue-first screening."],
@@ -203,6 +217,8 @@ class LiteratureRunTests(unittest.TestCase):
             self.assertEqual(state["preflight"]["status"], "registered")
             self.assertEqual(state["preflight"]["task_type"], "research-question")
             self.assertEqual(state["preflight"]["recommended_next_skill"], "literature-gap-workflow")
+            self.assertEqual(state["preflight"]["reference_count"], 2)
+            self.assertIn("problem-boundary", state["preflight"]["comparison_axes"])
             self.assertTrue(state["preflight"]["preflight_json"].endswith("preflight.json"))
 
     def test_set_preflight_registers_ready_artifact(self):

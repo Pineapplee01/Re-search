@@ -1,6 +1,11 @@
-# Re-search
+# Re-search: Codex-Oriented Skill Pack for Research and Implementation Workflows
 
-[中文说明](README_CN.md) | [Contributing](CONTRIBUTING.md) | [Agent Guide](AGENT_GUIDE.md)
+[![Verify](https://github.com/Pineapplee01/Re-search/actions/workflows/verify.yml/badge.svg)](https://github.com/Pineapplee01/Re-search/actions/workflows/verify.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+[中文 README](README_CN.md) | [Contributing](CONTRIBUTING.md) | [Agent Guide](AGENT_GUIDE.md) | [Release Checklist](RELEASE_CHECKLIST.md)
+
+Canonical public repository: [`Pineapplee01/Re-search`](https://github.com/Pineapplee01/Re-search)
 
 Re-search is a Codex-oriented skill pack and research/implementation methodology repository.
 It is designed for two recurring job families:

@@ -13,15 +13,21 @@
 
 ## existing_solution_space
 
-| ref_id | source_category | title | url | why_it_matters |
-|---|---|---|---|---|
-| R1 | github-skill / implementation-repo / paper / official-doc |  |  |  |
+| ref_id | source_category | title | url | why_it_matters | quality_signals |
+|---|---|---|---|---|---|
+| R1 | github-skill / implementation-repo / paper / official-doc |  |  |  | official / high-star / top-venue / recent / artifact-linked |
 
 ## selected_reference_patterns
 
 | ref_id | reusable_pattern | transfer_decision | boundary_limit |
 |---|---|---|---|
 | R1 |  | keep / adapt / reject |  |
+
+## comparison_axes
+
+- Axis 1:
+- Axis 2:
+- Axis 3:
 
 ## migration_path
 
